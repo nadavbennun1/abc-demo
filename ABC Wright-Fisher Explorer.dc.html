@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    input[type="range"] { accent-color: #7c9bff; }
+  </style>
+  <template id="__bundler_thumbnail" data-bg-color="#0a0e1a">
+    <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="28" r="8" fill="#ffb454"/>
+      <circle cx="36" cy="28" r="8" fill="#c084fc"/>
+      <path d="M14 40 Q28 48 42 40" fill="none" stroke="#5be08a" stroke-width="2.5"/>
+    </svg>
+  </template>
+</helmet>
+
+<div dir="rtl" lang="he" style="width:100%;min-height:100vh;background:#0a0e1a;color:#e8ecf4;font-family:'Heebo',system-ui,sans-serif;padding:36px 56px 60px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px">
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-size:14px;font-weight:700;color:#7c9bff;letter-spacing:0.05em">מודול אינטראקטיבי 2</div>
+    <div style="font-size:30px;font-weight:800;color:#fff">משחק ABC: גלו את הפרמטרים האבולוציוניים הנסתרים</div>
+    <div style="font-size:16px;color:#8b97b8;max-width:1000px">אוכלוסייה בגודל N=1000, שני אללים, 50 דורות. מדדנו את תדירות האלל לאורך זמן — עם רעש מדידה. מקדם הסלקציה (s) וקצב המוטציה (μ) האמיתיים <b style="color:#f87171">נסתרים ולעולם לא יוצגו</b>. תפקידכם: לבחור פריורי, להריץ ABC, ולקרוא את הפוסטריורי.</div>
+  </div>
+
+  <div style="background:#0d1226;border:1px solid #232d52;border-radius:16px;padding:20px 24px">
+    <div style="font-size:15px;font-weight:700;color:#e8ecf4;margin-bottom:10px">הנתונים שנמדדו: תדירות האלל A לאורך 50 דורות (עם רעש)</div>
+    <svg viewBox="0 0 820 220" style="width:100%;height:auto;display:block">
+      <line x1="50" y1="190" x2="800" y2="190" stroke="#232d52" stroke-width="2"></line>
+      <line x1="50" y1="20" x2="50" y2="190" stroke="#232d52" stroke-width="2"></line>
+      <polyline points="{{ obsPolyline }}" fill="none" stroke="#e8ecf4" stroke-width="2"></polyline>
+      <sc-for list="{{ obsDots }}" as="d" hint-placeholder-count="11">
+        <circle cx="{{ d.cx }}" cy="{{ d.cy }}" r="4.5" fill="#e8ecf4"></circle>
+      </sc-for>
+      <text x="50" y="205" fill="#5b6b8c" font-size="12">דור 0</text>
+      <text x="760" y="205" fill="#5b6b8c" font-size="12">דור 50</text>
+      <text x="15" y="24" fill="#5b6b8c" font-size="12">1.0</text>
+      <text x="15" y="192" fill="#5b6b8c" font-size="12">0.0</text>
+    </svg>
+  </div>
+
+  <div style="display:flex;gap:24px">
+    <div style="flex:1;background:#121a30;border:1px solid #232d52;border-radius:16px;padding:22px 26px;display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:16px;font-weight:800;color:#ffb454">פריורי על מקדם הסלקציה (s)</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="{{ setSPrior_uniform }}" style="flex:1;padding:9px 0;border-radius:999px;border:1px solid #2a3560;background:{{ sBtnUniformBg }};color:#fff;font-size:14px;font-weight:700;cursor:pointer">אחיד</button>
+        <button onclick="{{ setSPrior_normal }}" style="flex:1;padding:9px 0;border-radius:999px;border:1px solid #2a3560;background:{{ sBtnNormalBg }};color:#fff;font-size:14px;font-weight:700;cursor:pointer">נורמלי</button>
+      </div>
+      <sc-if value="{{ sIsUniform }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <label style="font-size:14px;color:#c3cbe0">מינימום: {{ sMinDisplay }}</label>
+          <input dir="ltr" type="range" min="-0.3" max="0.3" step="0.01" value="{{ sMin }}" onChange="{{ onSMin }}" />
+          <label style="font-size:14px;color:#c3cbe0">מקסימום: {{ sMaxDisplay }}</label>
+          <input dir="ltr" type="range" min="-0.3" max="0.6" step="0.01" value="{{ sMax }}" onChange="{{ onSMax }}" />
+        </div>
+      </sc-if>
+      <sc-if value="{{ sIsNormal }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <label style="font-size:14px;color:#c3cbe0">ממוצע: {{ sMeanDisplay }}</label>
+          <input dir="ltr" type="range" min="-0.2" max="0.4" step="0.01" value="{{ sMean }}" onChange="{{ onSMean }}" />
+          <label style="font-size:14px;color:#c3cbe0">סטיית תקן: {{ sStdDisplay }}</label>
+          <input dir="ltr" type="range" min="0.02" max="0.3" step="0.01" value="{{ sStd }}" onChange="{{ onSStd }}" />
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="flex:1;background:#121a30;border:1px solid #232d52;border-radius:16px;padding:22px 26px;display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:16px;font-weight:800;color:#c084fc">פריורי על קצב המוטציה (μ)</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="{{ setMuPrior_uniform }}" style="flex:1;padding:9px 0;border-radius:999px;border:1px solid #2a3560;background:{{ muBtnUniformBg }};color:#fff;font-size:14px;font-weight:700;cursor:pointer">אחיד</button>
+        <button onclick="{{ setMuPrior_normal }}" style="flex:1;padding:9px 0;border-radius:999px;border:1px solid #2a3560;background:{{ muBtnNormalBg }};color:#fff;font-size:14px;font-weight:700;cursor:pointer">נורמלי</button>
+      </div>
+      <sc-if value="{{ muIsUniform }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <label style="font-size:14px;color:#c3cbe0">מינימום: {{ muMinDisplay }}</label>
+          <input dir="ltr" type="range" min="-6" max="-1" step="0.1" value="{{ muMinExp }}" onChange="{{ onMuMinExp }}" />
+          <label style="font-size:14px;color:#c3cbe0">מקסימום: {{ muMaxDisplay }}</label>
+          <input dir="ltr" type="range" min="-5" max="0" step="0.1" value="{{ muMaxExp }}" onChange="{{ onMuMaxExp }}" />
+          <div style="font-size:12px;color:#8b97b8">סקאלה לוגריתמית — כל צעד מכפיל פי ~1.25.</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ muIsNormal }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <label style="font-size:14px;color:#c3cbe0">ממוצע: {{ muMeanDisplay }}</label>
+          <input dir="ltr" type="range" min="-6" max="-1" step="0.1" value="{{ muMeanExp }}" onChange="{{ onMuMeanExp }}" />
+          <label style="font-size:14px;color:#c3cbe0">סטיית תקן (סדרי גודל): {{ muStdExpDisplay }}</label>
+          <input dir="ltr" type="range" min="0.2" max="2" step="0.1" value="{{ muStdExp }}" onChange="{{ onMuStdExp }}" />
+          <div style="font-size:12px;color:#8b97b8">סקאלה לוגריתמית — סטיית התקן נמדדת בסדרי גודל (פי 10).</div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="background:#121a30;border:1px solid #232d52;border-radius:16px;padding:22px 26px;display:flex;gap:28px">
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+      <label style="font-size:14px;color:#c3cbe0">מספר דגימות מהפריורי (M): {{ numSamples }}</label>
+      <input dir="ltr" type="range" min="50" max="2000" step="50" value="{{ numSamples }}" onChange="{{ onNumSamples }}" />
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+      <label style="font-size:14px;color:#c3cbe0">אחוז קבלה (quantile ε): {{ quantilePct }}%</label>
+      <input dir="ltr" type="range" min="1" max="50" step="1" value="{{ quantilePct }}" onChange="{{ onQuantilePct }}" />
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:16px">
+    <button onclick="{{ runABC }}" style="background:#7c9bff;color:#0a0e1a;border:none;border-radius:999px;padding:14px 36px;font-size:16px;font-weight:800;cursor:pointer">{{ runLabel }}</button>
+    <div style="font-size:14.5px;color:#5b6b8c">מדגם {{ numSamples }} זוגות (s, μ) מהפריורי, מדמה כל אחד, ושומר את ה-{{ quantilePct }}% הקרובים ביותר לנתונים.</div>
+  </div>
+
+  <sc-if value="{{ hasRun }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;gap:24px">
+      <div style="flex:1;background:#0d1226;border:1px solid #232d52;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:16px;font-weight:800;color:#fff">התפלגות פוסטריורית משותפת (s, μ)</div>
+        <div style="font-size:13.5px;color:#8b97b8;white-space:pre-line">צבע = צפיפות מוחלקת (KDE) של הזוגות שהתקבלו.
+אמד: s ≈ {{ sPostMean }}, μ ≈ {{ muPostMean }}</div>
+        <svg viewBox="0 0 400 340" style="width:100%;height:auto;display:block">
+          <sc-for list="{{ kdeCells }}" as="c" hint-placeholder-count="196">
+            <rect x="{{ c.x }}" y="{{ c.y }}" width="{{ c.w }}" height="{{ c.h }}" fill="{{ c.fill }}"></rect>
+          </sc-for>
+          <line x1="40" y1="10" x2="40" y2="290" stroke="#7d89a8" stroke-width="1.5"></line>
+          <line x1="40" y1="290" x2="380" y2="290" stroke="#7d89a8" stroke-width="1.5"></line>
+          <sc-for list="{{ kdeSTicks }}" as="tk" hint-placeholder-count="5">
+            <line x1="{{ tk.x }}" y1="286" x2="{{ tk.x }}" y2="294" stroke="#7d89a8" stroke-width="1.5"></line>
+            <text x="{{ tk.x }}" y="308" fill="#c3cbe0" font-size="11.5" text-anchor="middle">{{ tk.label }}</text>
+          </sc-for>
+          <sc-for list="{{ kdeMuTicks }}" as="tk" hint-placeholder-count="5">
+            <line x1="36" y1="{{ tk.y }}" x2="44" y2="{{ tk.y }}" stroke="#7d89a8" stroke-width="1.5"></line>
+            <text x="30" y="{{ tk.y }}" fill="#c3cbe0" font-size="11.5" text-anchor="end" dominant-baseline="middle">{{ tk.label }}</text>
+          </sc-for>
+          <text x="210" y="330" fill="#c3cbe0" font-size="13" text-anchor="middle">מקדם סלקציה s →</text>
+          <text x="10" y="150" fill="#c3cbe0" font-size="13" text-anchor="middle" transform="rotate(-90 10 150)">קצב מוטציה μ →</text>
+        </svg>
+        <div style="font-size:13.5px;color:#c3cbe0">התקבלו {{ acceptedCount }} מתוך {{ numSamples }} זוגות מועמדים.</div>
+      </div>
+
+      <div style="flex:1;background:#0d1226;border:1px solid #232d52;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:16px;font-weight:800;color:#fff">בדיקת חיזוי פוסטריורי (PPC)</div>
+        <div style="font-size:13.5px;color:#8b97b8">כל קו ירוק = הדמיה חדשה (מקרית מחדש) מתוך זוג (s, μ) שהתקבל — לא אותה הרצה ששימשה להשוואה. הפיזור שאתם רואים הוא אי-הוודאות האמיתית של המודל.</div>
+        <svg viewBox="0 0 820 220" style="width:100%;height:auto;display:block">
+          <line x1="50" y1="190" x2="800" y2="190" stroke="#232d52" stroke-width="2"></line>
+          <line x1="50" y1="20" x2="50" y2="190" stroke="#232d52" stroke-width="2"></line>
+          <sc-for list="{{ ppcLines }}" as="ln" hint-placeholder-count="40">
+            <polyline points="{{ ln.points }}" fill="none" stroke="#5be08a" stroke-width="1.3" opacity="0.35"></polyline>
+          </sc-for>
+          <polyline points="{{ obsPolyline }}" fill="none" stroke="#e8ecf4" stroke-width="2.5"></polyline>
+          <sc-for list="{{ obsDots }}" as="d" hint-placeholder-count="11">
+            <circle cx="{{ d.cx }}" cy="{{ d.cy }}" r="4.5" fill="#e8ecf4"></circle>
+          </sc-for>
+          <text x="50" y="205" fill="#c3cbe0" font-size="12">דור 0</text>
+          <text x="760" y="205" fill="#c3cbe0" font-size="12">דור 50</text>
+          <text x="15" y="24" fill="#c3cbe0" font-size="12">1.0</text>
+          <text x="15" y="192" fill="#c3cbe0" font-size="12">0.0</text>
+        </svg>
+        <div style="display:flex;gap:18px;font-size:13px;font-weight:600">
+          <div style="color:#5be08a">— הדמיות מהפוסטריורי</div>
+          <div style="color:#e8ecf4">— נתונים שנמדדו</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gaussianFrom(rng) {
+  const u1 = Math.max(rng(), 1e-9), u2 = rng();
+  return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+}
+function clip01(x) { return Math.min(1, Math.max(0, x)); }
+function fmtMu(v) {
+  if (!(v > 0)) return '0';
+  return parseFloat(v.toPrecision(2)).toString();
+}
+function densityColor(t) {
+  const stops = [[13, 18, 38], [91, 157, 255], [192, 132, 252], [255, 180, 84]];
+  const seg = Math.min(2, Math.floor(t * 3));
+  const lt = t * 3 - seg;
+  const a = stops[seg], b = stops[seg + 1];
+  const r = Math.round(a[0] + (b[0] - a[0]) * lt);
+  const g = Math.round(a[1] + (b[1] - a[1]) * lt);
+  const bl = Math.round(a[2] + (b[2] - a[2]) * lt);
+  return 'rgb(' + r + ',' + g + ',' + bl + ')';
+}
+
+const POP_N = 1000, GENS = 50, P0 = 0.1;
+const SAMPLE_GENS = [0, 10, 20, 30, 40, 50];
+
+function simulateWFTraj(s, mu, rngFn) {
+  let p = P0;
+  const traj = [p];
+  for (let g = 0; g < GENS; g++) {
+    let pSel = (p * (1 + s)) / (1 + s * p);
+    pSel = clip01(pSel);
+    let pMut = pSel * (1 - mu) + (1 - pSel) * mu;
+    pMut = clip01(pMut);
+    const variance = Math.max(0, (pMut * (1 - pMut)) / POP_N);
+    const sd = Math.sqrt(variance);
+    p = clip01(pMut + sd * gaussianFrom(rngFn));
+    traj.push(p);
+  }
+  return traj;
+}
+
+class Component extends DCLogic {
+  state = {
+    sType: 'uniform', sMin: -0.05, sMax: 0.4, sMean: 0.1, sStd: 0.15,
+    muType: 'uniform', muMinExp: -5, muMaxExp: -1, muMeanExp: -2.5, muStdExp: 1.2,
+    numSamples: 400, quantilePct: 10,
+    hasRun: false, acceptedCount: 0,
+    sHist: null, muHist: null, ppcLines: '', sPostMean: '', muPostMean: '',
+  };
+
+  componentDidMount() {
+    // hidden ground truth — never exposed via renderVals or the template
+    const trueS = 0.2, trueMu = 0.001;
+    const rngTrue = mulberry32(4242);
+    const traj = simulateWFTraj(trueS, trueMu, rngTrue);
+    const rngNoise = mulberry32(1357);
+    this.observed = SAMPLE_GENS.map((g) => clip01(traj[g] + 0.45 * gaussianFrom(rngNoise)));
+    this.forceUpdate();
+  }
+
+  onSMin = (e) => this.setState({ sMin: parseFloat(e.target.value) });
+  onSMax = (e) => this.setState({ sMax: parseFloat(e.target.value) });
+  onSMean = (e) => this.setState({ sMean: parseFloat(e.target.value) });
+  onSStd = (e) => this.setState({ sStd: parseFloat(e.target.value) });
+  onMuMinExp = (e) => this.setState({ muMinExp: parseFloat(e.target.value) });
+  onMuMaxExp = (e) => this.setState({ muMaxExp: parseFloat(e.target.value) });
+  onMuMeanExp = (e) => this.setState({ muMeanExp: parseFloat(e.target.value) });
+  onMuStdExp = (e) => this.setState({ muStdExp: parseFloat(e.target.value) });
+  onNumSamples = (e) => this.setState({ numSamples: parseInt(e.target.value, 10) });
+  onQuantilePct = (e) => this.setState({ quantilePct: parseInt(e.target.value, 10) });
+
+  setSPrior_uniform = () => this.setState({ sType: 'uniform' });
+  setSPrior_normal = () => this.setState({ sType: 'normal' });
+  setMuPrior_uniform = () => this.setState({ muType: 'uniform' });
+  setMuPrior_normal = () => this.setState({ muType: 'normal' });
+
+  runABC = () => {
+    const s = this.state;
+    const rng = mulberry32(Date.now() % 2147483647);
+    const M = s.numSamples;
+    const drawS = () => {
+      if (s.sType === 'uniform') return s.sMin + rng() * (s.sMax - s.sMin);
+      return Math.max(-0.4, Math.min(0.7, s.sMean + s.sStd * gaussianFrom(rng)));
+    };
+    const drawMu = () => {
+      if (s.muType === 'uniform') return Math.pow(10, s.muMinExp + rng() * (s.muMaxExp - s.muMinExp));
+      const exp = Math.max(-8, Math.min(-1, s.muMeanExp + s.muStdExp * gaussianFrom(rng)));
+      return Math.pow(10, exp);
+    };
+
+    const candidates = [];
+    for (let i = 0; i < M; i++) {
+      const sv = drawS(), muv = drawMu();
+      const traj = simulateWFTraj(sv, muv, rng);
+      let dist = 0;
+      for (let j = 0; j < SAMPLE_GENS.length; j++) {
+        const diff = traj[SAMPLE_GENS[j]] - this.observed[j];
+        dist += diff * diff;
+      }
+      candidates.push({ s: sv, mu: muv, traj, dist });
+    }
+    candidates.sort((a, b) => a.dist - b.dist);
+    const keep = candidates.slice(0, Math.max(2, Math.round(M * (s.quantilePct / 100))));
+    // posterior predictive check: fresh stochastic re-simulations per accepted (s, mu) —
+    // NOT the same run used to judge acceptance, so real drift variance shows up.
+    keep.forEach((c) => { c.freshTraj = simulateWFTraj(c.s, c.mu, rng); });
+
+    this._accepted = keep;
+    this.setState({ hasRun: true, acceptedCount: keep.length });
+  };
+
+  renderVals() {
+    const s = this.state;
+    const obsX0 = 50, obsX1 = 800, obsY0 = 20, obsY1 = 190;
+    const genToX = (g) => obsX0 + (g / GENS) * (obsX1 - obsX0);
+    const freqToY = (f) => obsY1 - f * (obsY1 - obsY0);
+
+    const observed = this.observed || SAMPLE_GENS.map(() => 0.5);
+    const obsDots = SAMPLE_GENS.map((g, i) => ({ cx: genToX(g), cy: freqToY(observed[i]) }));
+    const obsPolyline = obsDots.map((d) => d.cx + ',' + d.cy).join(' ');
+
+    let sPostMean = '', muPostMean = '';
+    let kdeCells = [], kdeSTicks = [], kdeMuTicks = [];
+    if (s.hasRun && this._accepted && this._accepted.length) {
+      const accepted = this._accepted;
+      const sVals = accepted.map((c) => c.s);
+      const logMuVals = accepted.map((c) => Math.log10(c.mu));
+      const mean = (arr) => arr.reduce((a, c) => a + c, 0) / arr.length;
+      sPostMean = mean(sVals).toFixed(3);
+      muPostMean = fmtMu(mean(accepted.map((c) => c.mu)));
+
+      const pad = 0.15;
+      let sLo = Math.min(...sVals), sHi = Math.max(...sVals);
+      let sSpan = (sHi - sLo) || 0.05; sLo -= sSpan * pad; sHi += sSpan * pad;
+      let mLo = Math.min(...logMuVals), mHi = Math.max(...logMuVals);
+      let mSpan = (mHi - mLo) || 0.3; mLo -= mSpan * pad; mHi += mSpan * pad;
+
+      // Gaussian-kernel density estimate, evaluated on a grid (no calculus — just weighted sums)
+      const n = accepted.length;
+      const std = (arr) => { const m = mean(arr); return Math.sqrt(arr.reduce((a, v) => a + (v - m) * (v - m), 0) / arr.length) || 1e-6; };
+      const bwS = Math.max(1.06 * std(sVals) * Math.pow(n, -0.2), 1e-4);
+      const bwM = Math.max(1.06 * std(logMuVals) * Math.pow(n, -0.2), 1e-3);
+
+      const N_GRID = 26;
+      const gx0 = 40, gx1 = 380, gy0 = 10, gy1 = 290;
+      const cellW = (gx1 - gx0) / N_GRID, cellH = (gy1 - gy0) / N_GRID;
+      const dens = Array.from({ length: N_GRID }, () => new Array(N_GRID).fill(0));
+      for (let cy = 0; cy < N_GRID; cy++) {
+        const mCenter = mLo + (mHi - mLo) * ((cy + 0.5) / N_GRID);
+        for (let cx = 0; cx < N_GRID; cx++) {
+          const sCenter = sLo + (sHi - sLo) * ((cx + 0.5) / N_GRID);
+          let acc = 0;
+          for (let k = 0; k < n; k++) {
+            const ds = (sCenter - sVals[k]) / bwS;
+            const dm = (mCenter - logMuVals[k]) / bwM;
+            acc += Math.exp(-0.5 * (ds * ds + dm * dm));
+          }
+          dens[cy][cx] = acc;
+        }
+      }
+      let maxDens = 1e-9;
+      dens.forEach((row) => row.forEach((v) => { if (v > maxDens) maxDens = v; }));
+      for (let cy = 0; cy < N_GRID; cy++) {
+        for (let cx = 0; cx < N_GRID; cx++) {
+          const t = dens[cy][cx] / maxDens;
+          kdeCells.push({
+            x: gx0 + cx * cellW, y: gy1 - (cy + 1) * cellH, w: cellW + 0.6, h: cellH + 0.6,
+            fill: densityColor(t),
+          });
+        }
+      }
+      const kx0 = 40, kx1 = 380, ky0 = 10, ky1 = 290;
+      kdeSTicks = [0, 0.25, 0.5, 0.75, 1].map((f) => ({ x: kx0 + (kx1 - kx0) * f, label: (sLo + (sHi - sLo) * f).toFixed(2) }));
+      kdeMuTicks = [0, 0.25, 0.5, 0.75, 1].map((f) => ({ y: ky1 - (ky1 - ky0) * f, label: fmtMu(Math.pow(10, mLo + (mHi - mLo) * f)) }));
+    }
+    let ppcLines = [];
+    if (s.hasRun && this._accepted && this._accepted.length) {
+      ppcLines = this._accepted.slice(0, 60).map((c) => ({
+        points: c.freshTraj.map((p, g) => genToX(g) + ',' + freqToY(p)).join(' '),
+      }));
+    }
+
+    return {
+      sIsUniform: s.sType === 'uniform', sIsNormal: s.sType === 'normal',
+      muIsUniform: s.muType === 'uniform', muIsNormal: s.muType === 'normal',
+      sBtnUniformBg: s.sType === 'uniform' ? '#ffb454' : '#182142',
+      sBtnNormalBg: s.sType === 'normal' ? '#ffb454' : '#182142',
+      muBtnUniformBg: s.muType === 'uniform' ? '#c084fc' : '#182142',
+      muBtnNormalBg: s.muType === 'normal' ? '#c084fc' : '#182142',
+      sMin: s.sMin, sMinDisplay: s.sMin.toFixed(2), sMax: s.sMax, sMaxDisplay: s.sMax.toFixed(2),
+      sMean: s.sMean, sMeanDisplay: s.sMean.toFixed(2), sStd: s.sStd, sStdDisplay: s.sStd.toFixed(2),
+      muMinExp: s.muMinExp, muMinDisplay: fmtMu(Math.pow(10, s.muMinExp)),
+      muMaxExp: s.muMaxExp, muMaxDisplay: fmtMu(Math.pow(10, s.muMaxExp)),
+      muMeanExp: s.muMeanExp, muMeanDisplay: fmtMu(Math.pow(10, s.muMeanExp)),
+      muStdExp: s.muStdExp, muStdExpDisplay: '×10^' + s.muStdExp.toFixed(1),
+      onSMin: this.onSMin, onSMax: this.onSMax, onSMean: this.onSMean, onSStd: this.onSStd,
+      onMuMinExp: this.onMuMinExp, onMuMaxExp: this.onMuMaxExp, onMuMeanExp: this.onMuMeanExp, onMuStdExp: this.onMuStdExp,
+      setSPrior_uniform: this.setSPrior_uniform, setSPrior_normal: this.setSPrior_normal,
+      setMuPrior_uniform: this.setMuPrior_uniform, setMuPrior_normal: this.setMuPrior_normal,
+      runABC: this.runABC, runLabel: s.hasRun ? 'הרץ שוב' : 'הרץ ABC',
+      numSamples: s.numSamples, onNumSamples: this.onNumSamples,
+      quantilePct: s.quantilePct, onQuantilePct: this.onQuantilePct,
+      obsPolyline, obsDots,
+      hasRun: s.hasRun, acceptedCount: s.acceptedCount,
+      kdeCells, kdeSTicks, kdeMuTicks, ppcLines, sPostMean, muPostMean,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
